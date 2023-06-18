@@ -27,16 +27,22 @@ public class GameMaster
     }
 
     public GameMaster() {
+        Initializer.Instance.OnInitialize += Init;
+        
+        Init();
+    }
+    public void Init()
+    {
         currentTurn = 0;
         generatedNumber = -1;
         turns = 7;
+
         solution = new int[turns];
 
-        for(int i = 0; i < solution.Length; i++)
+        for (int i = 0; i < solution.Length; i++)
         {
             solution[i] = -1;
         }
-
         GameLoop();
     }
 
@@ -45,6 +51,8 @@ public class GameMaster
     int turns;
     public event Action<int> OnNumberGenerated;
     public event Action<int[]> OnSolutionUpdated;
+    public event Action OnWin;
+    public event Action OnLose;
     int[] solution;
 
     public void GameLoop()
@@ -56,17 +64,18 @@ public class GameMaster
             OnNumberGenerated?.Invoke(generatedNumber);
             if(AnyLegalMovesRemaining(generatedNumber) == false)
             {
-                Lose();
+                OnLose?.Invoke();
             }
         }
         else
         {
-            Win();
+            OnWin?.Invoke();
         }
     }
 
     public int GetGeneratedNumber() { return generatedNumber; }
     public int GetSolutionArrayFromIndex(int index) { return solution[index]; }
+    public int GetCurrentTurn() { return currentTurn; }
 
     public void ButtonPressed(int buttonIndex)
     {
@@ -128,15 +137,5 @@ public class GameMaster
         }
 
         return false;
-    }
-
-    void Lose()
-    {
-        Debug.Log("You Lose | Your score: " + (currentTurn-1));
-    }
-
-    void Win()
-    {
-        Debug.Log("You Win! | Your score: " + currentTurn);
     }
 }
