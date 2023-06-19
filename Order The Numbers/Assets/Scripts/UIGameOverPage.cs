@@ -24,7 +24,7 @@ public class UIGameOverPage : MonoBehaviour
     {
         text.text = "Your Score\n" + (GameMaster.Instance().GetCurrentTurn() - 1) + " Points";
         panel.SetActive(true);
-        
+
     }
 
     void DisablePanel()
